@@ -1,18 +1,13 @@
 {
-    "name": "multiplayer-movement",
-    "version": "1.0.0",
-    "description": "A simple multiplayer movement interface with Node.js and Socket.IO",
-    "main": "server.js",
-    "scripts": {
-        "start": "nodemon server.js"
-    },
-    "author": "Your Name",
-    "license": "ISC",
-    "dependencies": {
-        "express": "^4.21.1",
-        "socket.io": "^4.5.4"
-    },
-    "devDependencies": {
-        "nodemon": "^2.0.22"
-    }
+  "name": "cosmic-clash",
+  "version": "1.0.0",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.21.1",
+    "socket.io": "^4.8.1",
+    "ws": "^8.0.0"
+  }
 }
