@@ -25,6 +25,7 @@ const BULLET_SPEED = 5;
 
 socket.on('updatePlayers', (updatedPlayers) => {
   players = updatedPlayers;
+  drawPlayers();  // Ensure this function is called to update the canvas and log shoot status
 });
 
 socket.on('updateEntities', (entities) => {
