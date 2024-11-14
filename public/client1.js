@@ -12,13 +12,21 @@ function drawPlayers() {
   for (const id in players) {
     const player = players[id];
     ctx.beginPath();
+    // Change color based on shoot status
+    if (player.shoot === 1) {
+      ctx.fillStyle = "yellow";  // Color when shooting
+      console.log(`Player ${id} is shooting!`);
+    } else {
+      ctx.fillStyle = player.shape === "circle" ? "blue" : "red";  // Default colors
+      console.log(`Player ${id} is not shooting.`);
+    }
+    
+    // Draw the player based on their shape
     if (player.shape === "circle") {
       ctx.arc(player.x, player.y, 20, 0, Math.PI * 2);
-      ctx.fillStyle = "blue";
       ctx.fill();
     } else {
       ctx.rect(player.x - 20, player.y - 20, 40, 40);
-      ctx.fillStyle = "red";
       ctx.fill();
     }
     ctx.closePath();
@@ -26,11 +34,9 @@ function drawPlayers() {
 }
 
 socket.on("updatePlayers", (updatedPlayers) => {
-  console.log("Received updated players:", updatedPlayers);  // Log received data
   players = updatedPlayers;
-  drawPlayers();  // Ensure this function is called to update the canvas
+  drawPlayers();  // Ensure this function is called to update the canvas and log shoot status
 });
-
 
 window.addEventListener("keydown", (event) => {
   const directions = {
@@ -40,7 +46,7 @@ window.addEventListener("keydown", (event) => {
     d: "right",
   };
   const key = event.key.toLowerCase();
-  if (directions[event.key]) {
-    socket.emit("move", { direction: directions[event.key] });
+  if (directions[key]) {
+    socket.emit("move", { direction: directions[key] });
   }
 });

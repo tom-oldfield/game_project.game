@@ -21,10 +21,12 @@ io.on("connection", (socket) => {
       shape: role === "client1" ? "circle" : "square", // Circle for Client 1, Square for Client 2
       x: 400,
       y: 300,
+      shoot: 0, // Default shoot status
     };
     io.emit("updatePlayers", players);
   });
 
+  // Handle movement
   socket.on("move", (data) => {
     const player = players[socket.id];
     if (player) {
@@ -36,7 +38,19 @@ io.on("connection", (socket) => {
       io.emit("updatePlayers", players);
     }
   });
-  
+
+  // Handle shoot status from EMG data
+  socket.on("EMG", async (data) => {
+    const player = players[socket.id];
+    if (player) {
+      
+      player.shoot = data.shoot;  // Update the player's shoot status
+      io.emit("updatePlayers", players);  // Broadcast updated player data
+      if(player.shoot === 1) {
+        await new Promise(resolve => setTimeout(resolve, 20));  // Pause for 20 milliseconds
+      }
+    }
+  });
 
   socket.on("disconnect", () => {
     delete players[socket.id];
@@ -47,4 +61,3 @@ io.on("connection", (socket) => {
 server.listen(3000, '0.0.0.0', () => {
   console.log("Server listening on http://0.0.0.0:3000");
 });
-

@@ -64,7 +64,7 @@ def process_imu_data(pitch, yaw):
     # Send movement command based on relative values
     send_movement_command(relative_pitch, relative_yaw)
 
-EMG_THRESHOLD = 1.0  # Threshold for the averaged, scaled value
+EMG_THRESHOLD = 0.5  # Threshold for the averaged, scaled value
 SCALING_FACTOR = 100000  # Factor to bring values roughly into the 0-1 range
 
 def process_emg_data(emg_packet):
