@@ -1,3 +1,4 @@
+// public/client1.js
 const socket = io();
 const canvas = document.getElementById("gameCanvas");
 const ctx = canvas.getContext("2d");
@@ -98,6 +99,12 @@ function drawPlayers() {
     ctx.fillStyle = "white";
     ctx.font = "16px Arial";
     ctx.fillText(player.shape === 'circle' ? 'P1' : 'P2', player.x - 10, player.y - 30);
+
+    // Check if the player should shoot
+    if (player.shoot === 1) {
+      bullets.push({ x: player.x, y: player.y });
+      player.shoot = 0; // Reset shoot status after firing a bullet
+    }
   }
 }
 
@@ -199,8 +206,6 @@ function handleKeydown(event) {
   } else if (event.key === "ArrowDown" || event.key === "s") {
     players[socket.id].y += MOVE_INCREMENT;
     moved = true;
-  } else if (event.key === " ") { // Spacebar for shooting
-    bullets.push({ x: players[socket.id].x, y: players[socket.id].y });
   }
 
   if (moved) {
