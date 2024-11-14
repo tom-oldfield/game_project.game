@@ -176,12 +176,6 @@ io.on("connection", (socket) => {
     if (player) {
       player.shoot = data.shoot; // Update the player's shoot status
       io.emit("updatePlayers", players);
-      if (player.shoot === 1) {
-        setTimeout(() => {
-          player.shoot = 0;
-          io.emit("updatePlayers", players);
-        }, 20);
-      }
     }
   });
 
