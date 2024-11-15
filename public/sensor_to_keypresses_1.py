@@ -152,6 +152,6 @@ def stream_data(bridge, number_of_seconds_to_stream=1200, device_type=sbp.Device
 
 
 if __name__ == '__main__':
-    EXECUTABLE_PATH = "C:/Users/thomaseo/Desktop/sifi/gitproject/sifi-project/BridgeScriptExamples/sifibridge.exe"
+    EXECUTABLE_PATH = "./sifibridge.exe"
     bridge = sbp.SifiBridge(EXECUTABLE_PATH)
     stream_data(bridge=bridge)
