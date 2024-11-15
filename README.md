@@ -1,13 +1,13 @@
-Game Collision Detection and Motor Activation System
-Overview
+# Cosmic Clash!!
+## Overview
 This project integrates a BioPoint wristband with a game built using Python and Node.js. The wristband captures real-time motion and EMG (Electromyography) data to control game dynamics, while collisions detected in the game trigger a motor activation mechanism.
 
-Key Features:
+## Key Features:
 Motion-Based Controls: Uses IMU (Inertial Measurement Unit) data from the wristband for player movement.
 Shooting Mechanism: Triggered by EMG signals processed from the wristband.
 Motor Activation: Upon detecting a collision, the motor activates for 2 seconds.
 Real-Time Communication: Facilitates seamless interaction between Python, Node.js, and the game.
-System Architecture
+##System Architecture
 The system consists of the following components:
 
 1. BioPoint Wristband
@@ -23,7 +23,7 @@ Updates player positions and detects collisions.
 Emits collision events to the Python script.
 4. Socket.IO
 Facilitates bi-directional communication between Python and Node.js.
-Installation and Setup
+##Installation and Setup
 Prerequisites
 Hardware: BioPoint wristband and compatible motor.
 Software:
@@ -81,7 +81,7 @@ Activates the motor upon collision.
 Handle game visuals and interactions for two players.
 4. sifi_bridge.py
 Interface for interacting with the BioPoint wristband and motor.
-Troubleshooting
+## Troubleshooting
 Common Issues:
 Server Not Responding:
 
