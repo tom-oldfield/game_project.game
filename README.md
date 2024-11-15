@@ -86,18 +86,12 @@ Handle game visuals and interactions for two players.
 4. sifi_bridge.py
 Interface for interacting with the BioPoint wristband and motor.
 ## Troubleshooting
-Common Issues:
+### Common Issues:
+
 Server Not Responding:
 
 Ensure Node.js is installed and running on the correct port (3000 by default).
+
 Python Script Errors:
 
 Check that the SiFi bridge is properly configured and the wristband is connected.
-No Motor Activation:
-
-Verify the collisionDetected event is being emitted by the server.
-Ensure the motor is properly wired and controlled via the SiFi bridge.
-Future Improvements
-Enhance collision detection with more complex algorithms.
-Support multiple players with independent motor controls.
-Integrate additional sensor-based features like gesture recognition.
