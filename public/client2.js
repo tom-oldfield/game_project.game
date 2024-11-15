@@ -3,6 +3,8 @@ const socket = io();
 const canvas = document.getElementById("gameCanvas");
 const ctx = canvas.getContext("2d");
 
+socket.emit("setRole", "client2");
+
 const startButton = document.getElementById("startButton");
 const restartButton = document.getElementById("restartButton");
 const countdownDiv = document.getElementById("countdown");
