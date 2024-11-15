@@ -7,7 +7,7 @@ Motion-Based Controls: Uses IMU (Inertial Measurement Unit) data from the wristb
 Shooting Mechanism: Triggered by EMG signals processed from the wristband.
 Motor Activation: Upon detecting a collision, the motor activates for 2 seconds.
 Real-Time Communication: Facilitates seamless interaction between Python, Node.js, and the game.
-##System Architecture
+## System Architecture
 The system consists of the following components:
 
 1. BioPoint Wristband
