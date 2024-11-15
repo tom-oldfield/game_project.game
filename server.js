@@ -39,7 +39,7 @@ function resetGameData() {
   startPressedCount = 0;
   countdown = 3;
   for (const id in players) {
-    players[id].lives = 3;
+    players[id].lives = 300;
     players[id].score = 0;
   }
 }
@@ -141,7 +141,7 @@ io.on("connection", (socket) => {
       x: 400,
       y: 300,
       shape: role === "client1" ? "circle" : "triangle",
-      lives: 3, // Initialize lives
+      lives: 300, // Initialize lives
       score: 0, // Initialize score
       shoot: 0,
     };
