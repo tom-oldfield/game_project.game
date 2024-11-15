@@ -1,3 +1,4 @@
+// public/client2.js
 const socket = io();
 const canvas = document.getElementById("gameCanvas");
 const ctx = canvas.getContext("2d");
@@ -19,12 +20,14 @@ let gameOver = false;
 let gameStarted = false;
 let countdown = 3;
 let winner = null;
+var canShoot = true
 
 const MOVE_INCREMENT = 15;
 const BULLET_SPEED = 5;
 
 socket.on('updatePlayers', (updatedPlayers) => {
   players = updatedPlayers;
+  drawPlayers();  // Ensure this function is called to update the canvas and log shoot status
 });
 
 socket.on('updateEntities', (entities) => {
@@ -97,8 +100,20 @@ function drawPlayers() {
     ctx.fillStyle = "white";
     ctx.font = "16px Arial";
     ctx.fillText(player.shape === 'circle' ? 'P1' : 'P2', player.x - 10, player.y - 30);
+  
+    // Check if the player should shoot
+    if (player.shoot === 1 && canShoot) {
+      bullets.push({ x: player.x, y: player.y });
+      player.shoot = 0; // Reset shoot status after firing a bullet
+      canShoot = false
+      setTimeout(() => {
+        canShoot = true
+      }, 200);
+    }
   }
 }
+
+
 
 function drawEntities() {
   ctx.fillStyle = 'red';
