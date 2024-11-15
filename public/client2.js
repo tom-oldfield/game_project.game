@@ -18,20 +18,25 @@ let gameOver = false;
 let gameStarted = false;
 let countdown = 3;
 let winner = null;
-var canShoot = true
+let canShoot = true;
 
+const INITIAL_LIVES = 3;
+const MAX_LIVES = 5;
 const MOVE_INCREMENT = 15;
 const BULLET_SPEED = 5;
+const HEART_COLOR = 'rgba(255, 100, 100, 1.0)';
+const TRIPLESHOT_COLOR = 'rgba(100, 255, 100, 1.0)';
 
 socket.on('updatePlayers', (updatedPlayers) => {
   players = updatedPlayers;
-  drawPlayers();  // Ensure this function is called to update the canvas and log shoot status
+  drawScene();
 });
 
 socket.on('updateEntities', (entities) => {
   obstacles = entities.obstacles;
   hearts = entities.hearts;
   tripleshots = entities.tripleshots;
+  drawScene();
 });
 
 socket.on('gameOver', (data) => {
@@ -88,13 +93,21 @@ function showGameOverScreen() {
 function drawPlayers() {
   for (const id in players) {
     const player = players[id];
-    ctx.beginPath();
-    ctx.moveTo(player.x, player.y - 20);
-    ctx.lineTo(player.x - 20, player.y + 20);
-    ctx.lineTo(player.x + 20, player.y + 20);
-    ctx.closePath();
-    ctx.fillStyle = "green";
-    ctx.fill();
+    if (player.shape === 'circle') {
+      ctx.beginPath();
+      ctx.arc(player.x, player.y, 20, 0, Math.PI * 2);
+      ctx.closePath();
+      ctx.fillStyle = "green";
+      ctx.fill();
+    } else {
+      ctx.beginPath();
+      ctx.moveTo(player.x, player.y - 20);
+      ctx.lineTo(player.x - 20, player.y + 20);
+      ctx.lineTo(player.x + 20, player.y + 20);
+      ctx.closePath();
+      ctx.fillStyle = "green";
+      ctx.fill();
+    }
     ctx.fillStyle = "white";
     ctx.font = "16px Arial";
     ctx.fillText(player.shape === 'circle' ? 'P1' : 'P2', player.x - 10, player.y - 30);
@@ -117,14 +130,14 @@ function drawEntities() {
   ctx.fillStyle = 'red';
   obstacles.forEach(o => {
     ctx.beginPath();
-    ctx.arc(o[0] + o[2]/2, o[1] + o[2]/2, o[2]/2, 0, Math.PI * 2);
+    ctx.arc(o[0] + o[2] / 2, o[1] + o[2] / 2, o[2] / 2, 0, Math.PI * 2);
     ctx.fill();
   });
 
   hearts.forEach(h => {
     let centerX = h[0] + 10;
     let centerY = h[1] + 10;
-    ctx.fillStyle = 'rgba(255, 100, 100, 1.0)';
+    ctx.fillStyle = HEART_COLOR;
     ctx.beginPath();
     ctx.arc(centerX - 5, centerY, 14, 0, Math.PI * 2);
     ctx.arc(centerX + 5, centerY, 14, 0, Math.PI * 2);
@@ -135,14 +148,14 @@ function drawEntities() {
     ctx.fill();
   });
 
-  ctx.fillStyle = 'rgba(100, 255, 100, 1.0)';
+  ctx.fillStyle = TRIPLESHOT_COLOR;
   tripleshots.forEach(t => ctx.fillRect(t[0], t[1], 20, 20));
 }
 
 function drawBullets() {
   ctx.fillStyle = 'yellow';
   bullets.forEach(bullet => {
-    ctx.fillRect(bullet.x, bullet.y, 5, 10); // Small rectangles to represent bullets
+    ctx.fillRect(bullet.x, bullet.y, 5, 10);
   });
 }
 
@@ -151,75 +164,74 @@ function drawLivesAndScores() {
   for (const id in players) {
     const player = players[id];
     ctx.fillStyle = "white";
-    if (player.shape === "circle") { // Client 1
+    if (player.shape === "circle") {
       ctx.fillText(`Player 1 Lives: ${player.lives}`, 10, 30);
       ctx.fillText(`Player 1 Score: ${player.score}`, 10, 60);
-    } else { // Client 2
+    } else {
       ctx.fillText(`Player 2 Lives: ${player.lives}`, canvas.width - 180, 30);
       ctx.fillText(`Player 2 Score: ${player.score}`, canvas.width - 180, 60);
     }
   }
 }
 
-function update() {
-  if (!gameStarted) return;
-
-  if (gameOver) {
-    return;
-  }
-
+function drawScene() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   drawPlayers();
   drawEntities();
   drawBullets();
   drawLivesAndScores();
+}
 
-  // Update bullets
+function update() {
+  if (!gameStarted || gameOver) return;
+
   bullets = bullets.filter(bullet => {
     bullet.y -= BULLET_SPEED;
 
-    // Check for collisions with obstacles
-    for (let i = obstacles.length - 1; i >= 0; i--) {
-      let o = obstacles[i];
-      if (bullet.x > o[0] && bullet.x < o[0] + o[2] &&
-          bullet.y > o[1] && bullet.y < o[1] + o[2]) {
-        obstacles.splice(i, 1);
-        players[socket.id].score++;
-        socket.emit('updatePlayers', players); // Update server with new score
-        return false; // Remove the bullet
-      }
-    }
+    socket.emit("bulletHit", { bullet, playerId: socket.id });
 
-    return bullet.y > 0; // Keep bullets that are still on screen
+    return bullet.y > 0;
   });
+
+  drawScene();
 }
 
 function handleKeydown(event) {
-  if (!gameStarted) return;
-  if (gameOver) return;
+  if (!gameStarted || gameOver) return;
 
   let moved = false;
-  if (event.key === "ArrowLeft" || event.key === "a") {
-    players[socket.id].x -= MOVE_INCREMENT;
-    moved = true;
-  } else if (event.key === "ArrowRight" || event.key === "d") {
-    players[socket.id].x += MOVE_INCREMENT;
-    moved = true;
-  } else if (event.key === "ArrowUp" || event.key === "w") {
-    players[socket.id].y -= MOVE_INCREMENT;
-    moved = true;
-  } else if (event.key === "ArrowDown" || event.key === "s") {
-    players[socket.id].y += MOVE_INCREMENT;
-    moved = true;
-  } else if (event.key === " ") { // Spacebar for shooting
-    bullets.push({ x: players[socket.id].x, y: players[socket.id].y });
-  }
+  const player = players[socket.id];
 
-  if (moved) {
-    socket.emit('updatePosition', { x: players[socket.id].x, y: players[socket.id].y });
+  if (player) {
+    if (event.key === "ArrowLeft" || event.key === "a") {
+      player.x = Math.max(player.x - MOVE_INCREMENT, 0);
+      moved = true;
+    } else if (event.key === "ArrowRight" || event.key === "d") {
+      player.x = Math.min(player.x + MOVE_INCREMENT, canvas.width - 20);
+      moved = true;
+    } else if (event.key === "ArrowUp" || event.key === "w") {
+      player.y = Math.max(player.y - MOVE_INCREMENT, 0);
+      moved = true;
+    } else if (event.key === "ArrowDown" || event.key === "s") {
+      player.y = Math.min(player.y + MOVE_INCREMENT, canvas.height - 20);
+      moved = true;
+    } else if (event.key === " ") { // Spacebar for shooting
+      if (canShoot) {
+        bullets.push({ x: player.x, y: player.y });
+        canShoot = false;
+        setTimeout(() => {
+          canShoot = true;
+        }, 200); // Shooting cooldown
+      }
+    }
+
+    if (moved) {
+      socket.emit('updatePosition', { x: player.x, y: player.y });
+    }
   }
 }
 
+// Event Listeners
 startButton.addEventListener('click', () => {
   socket.emit('startPressed');
   startButton.style.display = 'none';
