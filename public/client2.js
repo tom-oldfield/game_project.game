@@ -9,8 +9,6 @@ const countdownDiv = document.getElementById("countdown");
 const gameOverMessageDiv = document.getElementById("gameOverMessage");
 const overlay = document.getElementById("overlay");
 
-socket.emit("setRole", "client2"); // Change this if it's client2
-
 let players = {};
 let obstacles = [];
 let hearts = [];
