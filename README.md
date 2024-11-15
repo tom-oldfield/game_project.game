@@ -23,45 +23,38 @@ Updates player positions and detects collisions.
 Emits collision events to the Python script.
 4. Socket.IO
 Facilitates bi-directional communication between Python and Node.js.
-##Installation and Setup
+## Installation and Setup
 Prerequisites
+This project is made using SifiLabs dependencies found here: https://github.com/SiFiLabs/sifi-bridge-pub https://github.com/SiFiLabs/sifi-bridge-py
 Hardware: BioPoint wristband and compatible motor.
 Software:
 Python 3.8+ with required libraries.
 Node.js (16+ recommended).
 SiFi Bridge CLI tool.
-Steps:
-Clone the Repository:
 
-bash
-Copy code
-git clone https://github.com/your-repo/game-collision-motor-activation.git
-cd game-collision-motor-activation
-Install Dependencies:
+Installation:
 
-Python:
-bash
-Copy code
+git clone https://github.com/tom-oldfield/game_project.game
+in the project folder: npm install
+it will install the necessary node modules to run.
+
+download the latest release in sifi-bridge-pub windows recommended: sifibridge-1.1.3-x86_64-pc-windows-msvc.zip
+
+make sure you have python version 3.12
+
+make sure you have the application version 1.1.3 because 1.2.0 is not currently supported make sure the sifi-bridge-py is 1.1.3, if you have python version 3.12 it will support 1.1.3
+
+use the command: PIP install sifi-bridge-py
 pip install python-socketio
-Node.js:
-bash
-Copy code
-npm install
-Run the Server:
 
-bash
-Copy code
-node server.js
-Run the Python Script:
+copy the executable from pub examples into the sifi folder
 
-bash
-Copy code
-python sensor_to_keypresses.py
-Connect the BioPoint Wristband:
+first start the server using: node server.js
+then visit the server.js website in the script address, default localhost:3000 
 
 Ensure the wristband is paired with your system.
 Confirm the connection using the SiFi Bridge tool.
-Usage
+## Usage
 1. Game Controls:
 Player Movement: Controlled using wrist motion (IMU data).
 Shooting: Triggered by strong EMG signals (e.g., clenching your fist).
