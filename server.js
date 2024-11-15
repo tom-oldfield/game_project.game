@@ -61,6 +61,11 @@ function detectCollisions() {
         // Collision detected
         player.lives--;
         obstacles.splice(index, 1);
+
+        // Emit collision event
+        console.log("collision Detected:", { playerId, obstacle });
+        io.emit("collisionDetected", { playerId, obstacle });
+
         if (player.lives <= 0) {
           player.lives = 0; // No negative lives
           io.emit("gameOver", { players });

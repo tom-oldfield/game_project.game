@@ -1,6 +1,7 @@
 import time
 import math
 import sifi_bridge_py as sbp
+from sifi_bridge_py import SifiBridge, DeviceCommand
 import socketio
 
 # Initialize Socket.IO client
@@ -23,6 +24,18 @@ def disconnect():
 
 # Connect to the server
 sio.connect("http://localhost:3000")
+
+@sio.on("collisionDetected")
+def on_collision_detected(data):
+    print(f"Collision detected for player: {data['playerId']}")
+    
+    # Activate the motor for 2 seconds
+    bridge.send_command(DeviceCommand.START_MOTOR)
+    time.sleep(2)
+    bridge.send_command(DeviceCommand.STOP_MOTOR)
+
+    # print("Listening for collision events...")
+    # sio.wait()
 
 def quaternion_to_euler(qw, qx, qy, qz):
     roll = math.atan2(2 * (qw * qx + qy * qz), 1 - 2 * (qx * qx + qy * qy))
@@ -85,7 +98,7 @@ def process_emg_data(emg_packet):
             # Compare against the threshold and send the appropriate message
             message = {"shoot": 1} if scaled_average > EMG_THRESHOLD else {"shoot": 0}
             sio.emit("EMG", message)
-            print(f"Sent EMG command: {message} with averaged, scaled value: {scaled_average}")
+            #print(f"Sent EMG command: {message} with averaged, scaled value: {scaled_average}")
         except (ValueError, TypeError):
             # Handle any unexpected data formats
             print("Error processing EMG data in packet.")
