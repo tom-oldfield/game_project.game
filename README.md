@@ -23,6 +23,8 @@ Updates player positions and detects collisions.
 Emits collision events to the Python script.
 4. Socket.IO
 Facilitates bi-directional communication between Python and Node.js.
+5. Client1.html and client2.html
+Visual showcase of the server.js data, they run their own client1.js & client2.js files seperately
 ## Installation and Setup
 Prerequisites
 
